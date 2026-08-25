@@ -28,6 +28,7 @@ const usersrouter = require("./routes/user.js");
 
 
 const dbUrl = process.env.ATLAS_URI || "mongodb://127.0.0.1:27017/wanderlust";
+const sessionSecret = process.env.SECRET || "wanderlust-secret";
 
 main()
   .then(() => {
@@ -56,7 +57,7 @@ app.use(express.static(path.join(__dirname, "/public")));
 const store = new MongoStore({
   mongoUrl: dbUrl,
   crypto: {
-    secret: process.env.SECRET,
+    secret: sessionSecret,
   },
   touchAfter: 24 * 60 * 60, // time period in seconds
 });
@@ -67,7 +68,7 @@ store.on("error", function (e) {
 
 const sessionOptions = {
   store,
-  secret: process.env.SECRET,
+  secret: sessionSecret,
   resave: false,
   saveUninitialized: true,
   cookie: {
